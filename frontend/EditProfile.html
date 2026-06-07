@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile | V-Phone</title>
+    <link rel="stylesheet" href="EditProfile.css">
+</head>
+<body>
+    <div class="main">
+
+        <div class="navbar">
+            <img src="assets/phoneicon.png" class="logoimage" alt="VPhone logo">
+            <h1 class="Logo">VPhone</h1>
+            <div class="menu">
+                <a href="homepage.html">Home</a>
+                <a href="About.html">About Us</a>
+                <a href="Products.html">Products</a>
+                <a href="Promo.html">Promos</a>
+            </div>
+            <div class="nav-user">
+                <a href="Cart.html" class="cart-icon-link">
+                    <img src="assets/cart_Icon.png" alt="Cart">
+                    <span id="nav-cart-count" class="cart-count">0</span>
+                </a>
+                <span id="nav-username">Hello, Guest!</span>
+            </div>
+        </div>
+
+        <section class="profile-section">
+            <div class="profile-card">
+                <h1>Edit Profile</h1>
+                <p class="subtitle">Update your account information below</p>
+
+                <div class="avatar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="white">
+                        <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+                    </svg>
+                </div>
+
+                <form id="edit-profile-form">
+
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input type="text" id="username" placeholder="Enter new username">
+                        <span class="error" id="error-username"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" placeholder="Enter new email">
+                        <span class="error" id="error-email"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="current-password">Current Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="current-password" placeholder="Enter current password">
+                            <button type="button" class="eye-btn" onclick="togglePassword('current-password', this)">
+                                <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                                    <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                                    <line x1="1" y1="1" x2="23" y2="23"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <span class="error" id="error-current-password"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="new-password">New Password <span style="font-weight:400;color:#888;">(leave blank to keep current)</span></label>
+                        <div class="password-wrapper">
+                            <input type="password" id="new-password" placeholder="Enter new password">
+                            <button type="button" class="eye-btn" onclick="togglePassword('new-password', this)">
+                                <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                                    <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                                    <line x1="1" y1="1" x2="23" y2="23"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <span class="error" id="error-new-password"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="confirm-password">Confirm New Password</label>
+                        <div class="password-wrapper">
+                            <input type="password" id="confirm-password" placeholder="Confirm new password">
+                            <button type="button" class="eye-btn" onclick="togglePassword('confirm-password', this)">
+                                <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+                                    <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+                                    <line x1="1" y1="1" x2="23" y2="23"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <span class="error" id="error-confirm-password"></span>
+                    </div>
+
+                    <span class="error" id="error-general"></span>
+                    <span class="success" id="success-msg"></span>
+
+                    <div class="btn-group">
+                        <button type="button" id="btn-cancel" onclick="history.back()">Cancel</button>
+                        <button type="submit" id="btn-save">Save Changes</button>
+                    </div>
+
+                </form>
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>Copyright © 2025 V-Phone Corporation. All Rights Reserved</p>
+    </footer>
+
+    <script src="EditProfile.js"></script>
+    <script src="Navbar.js"></script>
+</body>
+</html>

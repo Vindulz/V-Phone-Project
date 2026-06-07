@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order History | V-Phone</title>
+    <link rel="stylesheet" href="OrderHistory.css">
+</head>
+<body>
+    <div class="main">
+
+        <div class="navbar">
+            <img src="assets/phoneicon.png" class="logoimage" alt="VPhone logo">
+            <h1 class="Logo">VPhone</h1>
+            <div class="menu">
+                <a href="homepage.html">Home</a>
+                <a href="About.html">About Us</a>
+                <a href="Products.html">Products</a>
+                <a href="Promo.html">Promos</a>
+            </div>
+            <div class="nav-user">
+                <a href="Cart.html" class="cart-icon-link">
+                    <img src="assets/cart_Icon.png" alt="Cart">
+                    <span id="nav-cart-count" class="cart-count">0</span>
+                </a>
+                <span id="nav-username">Hello, Guest!</span>
+            </div>
+        </div>
+
+        <section class="history-section">
+            <h1>Order History</h1>
+            <p class="history-subtitle">Your past placed orders</p>
+            <div id="history-list" class="history-list">
+                <p id="empty-msg">No orders yet.</p>
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>Copyright © 2025 V-Phone Corporation. All Rights Reserved</p>
+    </footer>
+
+    <script src="OrderHistory.js"></script>
+    <script src="Navbar.js"></script>
+</body>
+</html>

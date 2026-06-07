@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | V-Phone</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="Admin.css">
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <img src="assets/phoneicon.png" alt="VPhone">
+            <span>VPhone</span>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active" data-section="overview">
+                <span class="nav-icon"><img src="assets/Dashboard.png" alt="Overview"></span> Overview
+            </a>
+            <a href="#" class="nav-item" data-section="products">
+                <span class="nav-icon"><img src="assets/products.png" alt="Products"></span> Products
+            </a>
+            <a href="#" class="nav-item" data-section="users">
+                <span class="nav-icon"><img src="assets/users.png" alt="Users"></span> Users
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="homepage.html" class="back-link">← Back to Site</a>
+        </div>
+    </aside>
+
+    <main class="dashboard">
+
+        <header class="topbar">
+            <div class="topbar-left">
+                <h1 id="section-title">Overview</h1>
+                <p id="section-subtitle">Welcome back, Admin</p>
+            </div>
+            <div class="topbar-right">
+                <span id="admin-name" class="admin-badge">Admin</span>
+            </div>
+        </header>
+
+        <!-- OVERVIEW -->
+        <section id="section-overview" class="section active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon"><img src="assets/products.png" alt="Products" class="icon-dark"></div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="total-products">—</span>
+                        <span class="stat-label">Total Products</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><img src="assets/users.png" alt="Users"></div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="total-users">—</span>
+                        <span class="stat-label">Registered Users</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><img src="assets/WarnLogo.png" alt="Low Stock"></div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="low-stock">—</span>
+                        <span class="stat-label">Low Stock Items</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><img src="assets/OutOfStock.png" alt="Out of Stock"></div>
+                    <div class="stat-info">
+                        <span class="stat-value" id="out-of-stock">—</span>
+                        <span class="stat-label">Out of Stock</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="overview-tables">
+                <div class="overview-table-card">
+                    <h2>Recent Products</h2>
+                    <table class="dash-table">
+                        <thead><tr><th>Name</th><th>Price</th><th>Stock</th><th>Status</th></tr></thead>
+                        <tbody id="overview-products-body"><tr><td colspan="4" class="loading">Loading...</td></tr></tbody>
+                    </table>
+                </div>
+                <div class="overview-table-card">
+                    <h2>Recent Users</h2>
+                    <table class="dash-table">
+                        <thead><tr><th>Username</th><th>Email</th><th>Role</th></tr></thead>
+                        <tbody id="overview-users-body"><tr><td colspan="3" class="loading">Loading...</td></tr></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- PRODUCTS -->
+        <section id="section-products" class="section">
+            <div class="section-header">
+                <h2>Manage Products</h2>
+                <button class="btn-primary" id="btn-add-product">+ Add Product</button>
+            </div>
+
+            <!-- ADD FORM -->
+            <div class="form-card" id="add-product-form" style="display:none;">
+                <h3>Add New Product</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Product Name</label>
+                        <input type="text" id="p-name" placeholder="e.g. V-Phone XG Pro">
+                    </div>
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="p-category">
+                            <option value="">Select category</option>
+                            <option value="gaming">Gaming</option>
+                            <option value="camera">Camera</option>
+                            <option value="budget">Budget</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Price (Rp)</label>
+                        <input type="number" id="p-price" placeholder="e.g. 23459999">
+                    </div>
+                    <div class="form-group">
+                        <label>Stock</label>
+                        <input type="number" id="p-stock" placeholder="e.g. 50">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Specs <span style="color:#888;font-weight:400;">(up to 4 bullet points)</span></label>
+                        <input type="text" id="p-spec1" placeholder="e.g. Snapdragon 8 Gen 2">
+                        <input type="text" id="p-spec2" placeholder="e.g. 120Hz AMOLED Display" style="margin-top:0.5rem;">
+                        <input type="text" id="p-spec3" placeholder="e.g. 6000mAh Battery" style="margin-top:0.5rem;">
+                        <input type="text" id="p-spec4" placeholder="e.g. 256GB Storage" style="margin-top:0.5rem;">
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Description</label>
+                        <textarea id="p-description" placeholder="Product description..." rows="3"></textarea>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Product Image <span style="color:#888;font-weight:400;">(JPG or PNG, max 5MB)</span></label>
+                        <input type="file" id="p-image" accept=".jpg,.jpeg,.png">
+                        <div id="p-image-preview" style="display:none;margin-top:0.75rem;">
+                            <img id="p-preview-img" src="" alt="Preview" style="max-height:10rem;border-radius:0.5rem;border:1px solid #ddd;">
+                        </div>
+                    </div>
+                </div>
+                <span class="error" id="p-error"></span>
+                <div class="form-actions">
+                    <button class="btn-secondary" id="btn-cancel-product">Cancel</button>
+                    <button class="btn-primary" id="btn-save-product">Save Product</button>
+                </div>
+            </div>
+
+            <table class="dash-table full-table">
+                <thead>
+                    <tr>
+                        <th>ID</th><th>Image</th><th>Name</th><th>Category</th>
+                        <th>Price</th><th>Stock</th><th>Status</th><th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="products-table-body">
+                    <tr><td colspan="8" class="loading">Loading...</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- USERS -->
+        <section id="section-users" class="section">
+            <div class="section-header">
+                <h2>Manage Users</h2>
+            </div>
+            <table class="dash-table full-table">
+                <thead>
+                    <tr><th>ID</th><th>Username</th><th>Email</th><th>Gender</th><th>Role</th><th>Joined</th><th>Actions</th></tr>
+                </thead>
+                <tbody id="users-table-body">
+                    <tr><td colspan="7" class="loading">Loading...</td></tr>
+                </tbody>
+            </table>
+        </section>
+
+    </main>
+
+    <!-- EDIT PRODUCT MODAL -->
+    <div class="modal-overlay" id="edit-modal-overlay" style="display:none;">
+        <div class="modal modal-wide">
+            <h3>Edit Product</h3>
+            <div class="form-grid" style="margin-top:1rem;">
+                <div class="form-group">
+                    <label>Product Name</label>
+                    <input type="text" id="e-name" placeholder="Product name">
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="e-category">
+                        <option value="">Select category</option>
+                        <option value="gaming">Gaming</option>
+                        <option value="camera">Camera</option>
+                        <option value="budget">Budget</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Price (Rp)</label>
+                    <input type="number" id="e-price" placeholder="Price">
+                </div>
+                <div class="form-group">
+                    <label>Stock</label>
+                    <input type="number" id="e-stock" placeholder="Stock">
+                </div>
+                <div class="form-group full-width">
+                    <label>Specs <span style="color:#888;font-weight:400;">(up to 4)</span></label>
+                    <input type="text" id="e-spec1" placeholder="Spec 1">
+                    <input type="text" id="e-spec2" placeholder="Spec 2" style="margin-top:0.5rem;">
+                    <input type="text" id="e-spec3" placeholder="Spec 3" style="margin-top:0.5rem;">
+                    <input type="text" id="e-spec4" placeholder="Spec 4" style="margin-top:0.5rem;">
+                </div>
+                <div class="form-group full-width">
+                    <label>Description</label>
+                    <textarea id="e-description" rows="3" placeholder="Description..."></textarea>
+                </div>
+                <div class="form-group full-width">
+                    <label>New Image <span style="color:#888;font-weight:400;">(leave empty to keep current)</span></label>
+                    <input type="file" id="e-image" accept=".jpg,.jpeg,.png">
+                    <div id="e-image-preview" style="margin-top:0.75rem;">
+                        <img id="e-preview-img" src="" alt="Current image" style="max-height:8rem;border-radius:0.5rem;border:1px solid #ddd;display:none;">
+                    </div>
+                </div>
+            </div>
+            <span class="error" id="e-error"></span>
+            <div class="modal-actions" style="margin-top:1.25rem;">
+                <button class="btn-secondary" id="edit-modal-cancel">Cancel</button>
+                <button class="btn-primary" id="edit-modal-save">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DELETE MODAL -->
+    <div class="modal-overlay" id="modal-overlay" style="display:none;">
+        <div class="modal">
+            <h3>Confirm Delete</h3>
+            <p id="modal-message">Are you sure you want to delete this item?</p>
+            <div class="modal-actions">
+                <button class="btn-secondary" id="modal-cancel">Cancel</button>
+                <button class="btn-danger" id="modal-confirm">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="Admin.js"></script>
+</body>
+</html>

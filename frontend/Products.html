@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products | V-Phone</title>
+    <link rel="stylesheet" href="Products.css">
+</head>
+<body>
+    <div class="main">
+
+        <div class="navbar">
+            <img src="assets/phoneicon.png" class="logoimage">
+            <h1 class="Logo"> VPhone </h1>
+            <div class="menu">
+                <a href="homepage.html">Home</a>
+                <a href="About.html">About Us</a>
+                <a href="Products.html">Products</a>
+                <a href="Promo.html">Promos</a>
+            </div>
+            <div class="nav-user">
+                <a href="Cart.html" class="cart-icon-link">
+                    <img src="assets/cart_Icon.png" alt="Cart">
+                    <span id="nav-cart-count" class="cart-count">0</span>
+                </a>
+                <span id="nav-username">Hello, Guest!</span>
+            </div>
+        </div>
+
+        <div class="product-description">
+            <h1>Welcome To The Future Of Mobile Technology!</h1>
+            <p>At V-Phone, we design cutting-edge smartphones and accessories that combine sleek design, powerful performance, and exceptional value. Whether you're a mobile gamer, a photography enthusiast, or someone looking for an affordable, high-performance phone, we have something for everyone. Our products feature the latest in technology, from blazing-fast processors and stunning displays to long-lasting batteries and advanced camera systems. Explore our range of devices and experience the future of mobile technology today.</p>
+        </div>
+
+        <div class="Filter">
+            <h1>Filter :</h1>
+            <div class="btn-filter">
+                <a href="#gaming"><button class="buy-btn">Gaming</button></a>
+                <a href="#camera"><button class="buy-btn">Camera</button></a>
+                <a href="#budget"><button class="buy-btn">Budget</button></a>
+            </div>
+        </div>
+
+        <!-- ===== GAMING ===== -->
+        <section class="Gaming" id="gaming">
+            <h1>For Those Who Enjoy The Exhilirating Thrill Of Gaming</h1>
+            <div class="carousel-container">
+                <button class="nav-btn" onclick="moveSlide('gaming', -1)">←</button>
+                <div class="carousel">
+                    <!-- dynamically filled by Products.js -->
+                </div>
+                <button class="nav-btn" onclick="moveSlide('gaming', 1)">→</button>
+            </div>
+        </section>
+
+        <!-- ===== CAMERA ===== -->
+        <section class="Camera" id="camera">
+            <h1>For Photography Enthusiasts Seeking Stunning Clarity</h1>
+            <div class="carousel-container">
+                <button class="nav-btn" onclick="moveSlide('camera', -1)">←</button>
+                <div class="carousel">
+                    <!-- dynamically filled by Products.js -->
+                </div>
+                <button class="nav-btn" onclick="moveSlide('camera', 1)">→</button>
+            </div>
+        </section>
+
+        <!-- ===== BUDGET ===== -->
+        <section class="Budget" id="budget">
+            <h1>Affordable Options for Every Budget</h1>
+            <div class="carousel-container">
+                <button class="nav-btn" onclick="moveSlide('budget', -1)">←</button>
+                <div class="carousel">
+                    <!-- dynamically filled by Products.js -->
+                </div>
+                <button class="nav-btn" onclick="moveSlide('budget', 1)">→</button>
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>Copyright © 2025 V-Phone Corporation. All Rights Reserved</p>
+    </footer>
+
+    <script src="Products.js"></script>
+    <script src="Navbar.js"></script>
+</body>
+</html>

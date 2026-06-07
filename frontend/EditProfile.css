@@ -1,0 +1,355 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend&display=swap');
+
+body {
+    margin: 0;
+    padding: 0;
+}
+
+.main {
+    background: linear-gradient(to bottom, white, #b5e4fc);
+    width: 100%;
+    min-height: 100vh;
+    max-width: 118.75rem;
+    margin: 0 auto;
+}
+
+/* ===== NAVBAR ===== */
+.navbar {
+    background: linear-gradient(90deg, #000000 8%, #133877 31%);
+    display: flex;
+    align-items: center;
+    height: 5rem;
+}
+
+.logoimage {
+    margin-left: 0.3125rem;
+    width: 4rem;
+    height: 4rem;
+}
+
+.Logo {
+    color: rgb(255, 247, 237);
+    font-family: 'Lexend', sans-serif;
+    font-weight: 700;
+    font-size: 1.875rem;
+    margin: 0;
+    padding: 0 0.5rem;
+}
+
+.menu {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 1;
+}
+
+.navbar a {
+    text-decoration: none;
+    font-family: 'Lexend', sans-serif;
+    color: rgb(255, 247, 237);
+    font-weight: 700;
+    padding: 0.5rem 1rem;
+    margin-left: 0.5rem;
+    margin-top: 0;
+    font-size: 1.3rem;
+    position: relative;
+    transition: 0.2s ease-in;
+}
+
+.navbar a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: currentColor;
+    transition: width 0.3s ease-in-out;
+}
+
+.navbar a:hover::after {
+    width: 100%;
+}
+
+.nav-user {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-left: 1.5rem;
+    margin-right: 2rem;
+}
+
+#nav-username {
+    color: rgb(255, 247, 237);
+    font-family: 'Lexend', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    white-space: nowrap;
+    order: 2;
+    cursor: pointer;
+    position: relative;
+}
+
+.cart-icon-link {
+    color: white;
+    text-decoration: none;
+    position: relative;
+    display: flex;
+    align-items: center;
+    order: 1;
+    margin-top: 0 !important;
+    padding: 0 !important;
+}
+
+.cart-icon-link::after { display: none !important; }
+
+.cart-icon-link img {
+    width: 2rem;
+    height: 2rem;
+    filter: brightness(0) invert(1);
+    transition: opacity 0.2s ease;
+}
+
+.cart-count {
+    position: absolute;
+    top: -0.4rem;
+    right: -0.5rem;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    font-size: 0.65rem;
+    width: 1rem;
+    height: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Lexend', sans-serif;
+    font-weight: 700;
+}
+
+/* ===== PROFILE SECTION ===== */
+.profile-section {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 3rem 1rem;
+    min-height: 80vh;
+}
+
+.profile-card {
+    background: white;
+    border-radius: 1rem;
+    box-shadow: 0 0.5rem 2rem rgba(0, 0, 0, 0.1);
+    padding: 2.5rem 3rem;
+    width: 100%;
+    max-width: 30rem;
+    animation: slideUp 0.4s ease;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(1.5rem); opacity: 0; }
+    to   { transform: translateY(0);      opacity: 1; }
+}
+
+.profile-card h1 {
+    font-family: 'Lexend', sans-serif;
+    font-size: 1.8rem;
+    color: #002373;
+    margin: 0 0 0.25rem 0;
+    text-align: center;
+}
+
+.subtitle {
+    font-family: 'Lexend', sans-serif;
+    font-size: 0.875rem;
+    color: #888;
+    text-align: center;
+    margin: 0 0 1.5rem 0;
+}
+
+/* Avatar circle showing first letter of username */
+.avatar {
+    width: 5rem;
+    height: 5rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #133877, #67A3E0);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem auto;
+}
+
+#avatar-letter {
+    font-family: 'Lexend', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+    text-transform: uppercase;
+}
+
+/* ===== FORM ===== */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1.25rem;
+}
+
+.form-group label {
+    font-family: 'Lexend', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 0.4rem;
+}
+
+.form-group input,
+.form-group select {
+    padding: 0.65rem 0.875rem;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    font-family: 'Lexend', sans-serif;
+    font-size: 0.95rem;
+    color: #333;
+    transition: border-color 0.2s ease;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #133877;
+}
+
+.error {
+    color: #e74c3c;
+    font-family: 'Lexend', sans-serif;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+    display: block;
+    min-height: 1rem;
+}
+
+.success {
+    color: #27ae60;
+    font-family: 'Lexend', sans-serif;
+    font-size: 0.875rem;
+    display: block;
+    text-align: center;
+    margin-bottom: 0.5rem;
+    min-height: 1rem;
+}
+
+/* ===== BUTTONS ===== */
+.btn-group {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.btn-group button {
+    flex: 1;
+    padding: 0.75rem;
+    border: none;
+    border-radius: 0.625rem;
+    font-family: 'Lexend', sans-serif;
+    font-weight: 700;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+#btn-cancel {
+    background-color: #f0f0f0;
+    color: #555;
+}
+
+#btn-cancel:hover {
+    background-color: #e0e0e0;
+}
+
+#btn-save {
+    background-color: #133877;
+    color: white;
+}
+
+#btn-save:hover {
+    background-color: #0a2150;
+}
+
+#btn-save:active {
+    transform: scale(0.97);
+}
+
+/* ===== FOOTER ===== */
+footer {
+    background-color: #133877;
+    padding: 0.625rem;
+    height: 1.875rem;
+}
+
+footer p {
+    display: flex;
+    font-family: 'Lexend', sans-serif;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.25rem;
+    margin: 0.3125rem;
+    color: white;
+}
+
+/* ===== PASSWORD TOGGLE ===== */
+.password-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-wrapper input {
+    padding-right: 2.75rem;
+}
+
+.eye-btn {
+    position: absolute;
+    right: 0.75rem;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    color: #888;
+    transition: color 0.2s ease;
+}
+
+.eye-btn:hover {
+    color: #133877;
+}
+
+.eye-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+@media (max-width: 48rem) {
+    .profile-card {
+        padding: 1.5rem;
+    }
+
+    .profile-card h1 {
+        font-size: 1.4rem;
+    }
+
+    .navbar a {
+        font-size: 0.625rem;
+        margin-left: 0;
+    }
+
+    .Logo {
+        font-size: 0.625rem;
+    }
+
+    footer p {
+        font-size: 0.75rem;
+    }
+}

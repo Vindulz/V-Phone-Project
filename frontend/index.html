@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | V-Phone</title>
+    <link rel="stylesheet" href="Register.css">
+</head>
+<body>
+    <div class="form">
+        <form id="registform" action="homepage.html" method="POST">
+            <h1>Register</h1>
+            <div>
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Username">
+                <span id="error-username" class="error"></span>
+            </div>
+
+            <div>
+                <label for="gender">Gender</label>
+                <select id="gender" name="gender">
+                    <option value="">Select gender</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                </select>
+                <span id="error-gender" class="error"></span>
+            </div>
+            
+            
+            <div>
+                <label for="email">Email</label>
+                <input type="text" id="email" name="email" placeholder="Email">
+                <span id="error-email" class="error"></span>
+            </div>
+            
+            <div>
+                <label for="password">Password</label>
+                <input type="text" id="password" name="password" placeholder="Password">
+                <span id="error-password" class="error"></span>
+            </div>
+            
+            <div>
+                <label for="confirm-password">Confirm Password</label>
+                <input type="text" id="confirm-password" name="confirm-password" placeholder="Confirm Password">
+                <span id="error-confirm-password" class="error"></span>
+            </div>
+            
+            <div>
+                <input type="checkbox" id="agree" name="agree">
+                <label for="agree"><strong>I agree to the Terms and Conditions</strong></label>
+                <span id="error-agree" class="error"></span>
+            </div>
+            
+            <button type="submit" id="btn-submit">Submit</button>
+
+            <p class="switch-link">Already have an account? <a href="Login.html">Login here</a></p>
+        </form>
+        <script src="Register.js"></script>
+    </div>
+</body>
+</html>

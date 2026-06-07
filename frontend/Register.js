@@ -80,10 +80,10 @@ function validateForm() {
     return validAgree && validConfirm && validEmail && validPass && validUser && validGender;
 }
 
-// validate while typing
+// validasi selama ngetik
 form.addEventListener("input", validateForm);
 
-// on submit button click
+// submit button
 btnSubmit.addEventListener("click", async function(e) {
     e.preventDefault();
 
@@ -98,7 +98,7 @@ btnSubmit.addEventListener("click", async function(e) {
     };
 
     try {
-        const res = await fetch("http://localhost:3000/api/users/register", {
+        const res = await fetch(`http://${window.location.hostname}:3000/api/users/register`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(body),

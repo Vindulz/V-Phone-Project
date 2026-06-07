@@ -25,7 +25,7 @@ async function loadHistory() {
     }
 
     try {
-        const res = await fetch(`http://localhost:3000/api/orders/history?userId=${userId}`);
+        const res = await fetch(`http://${window.location.hostname}:3000/api/orders/history?userId=${userId}`);
         const orders = await res.json();
 
         const list = document.getElementById("history-list");

@@ -8,6 +8,7 @@ import { OrdersModule } from './orders-service/orders.module';
 import { AuthModule } from './auth-service/auth.module';
 import { ProductsModule } from './products-service/products.module';
 import { NotificationsModule } from './notifications-service/notifications.module';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { NotificationsModule } from './notifications-service/notifications.modul
       rootPath: join(__dirname, '..', '..', 'frontend'),
     }),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
+      imports: [ConfigModule,EventEmitterModule.forRoot()],
       useFactory: (config: ConfigService) => ({
         type: 'mysql',
         host: config.get('DB_HOST'),

@@ -12,7 +12,7 @@ async function loadCart() {
   }
 
   try {
-    const res = await fetch(`http://localhost:3000/api/orders/cart?userId=${userId}`);
+    const res = await fetch(`http://${window.location.hostname}:3000/api/orders/cart?userId=${userId}`);
     const items = await res.json();
 
     const cartContainer = document.getElementById("cart-items");
@@ -68,7 +68,7 @@ async function changeCartQty(id, delta) {
   const newQty = current + delta;
 
   if (newQty < 1) {
-    // Ask before removing
+
     if (confirm("Remove this item from cart?")) {
       removeItem(id);
     }
@@ -76,7 +76,7 @@ async function changeCartQty(id, delta) {
   }
 
   try {
-    const res = await fetch(`http://localhost:3000/api/orders/cart/${id}/quantity`, {
+    const res = await fetch(`http://${window.location.hostname}:3000/api/orders/cart/${id}/quantity`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ quantity: newQty }),
@@ -86,7 +86,7 @@ async function changeCartQty(id, delta) {
 
     display.textContent = newQty;
 
-    // Update subtotal on the card
+
     const card = display.closest(".cart-card");
     const unitPrice = Number(card.dataset.price);
     card.querySelector(".subtotal").textContent = formatPrice(unitPrice * newQty);
@@ -100,7 +100,7 @@ async function changeCartQty(id, delta) {
 
 async function removeItem(id) {
   try {
-    const res = await fetch(`http://localhost:3000/api/orders/cart/${id}`, {
+    const res = await fetch(`http://${window.location.hostname}:3000/api/orders/cart/${id}`, {
       method: "DELETE",
     });
 
@@ -130,7 +130,7 @@ async function checkout() {
   checkoutBtn.textContent = "Processing...";
 
   try {
-    const res = await fetch(`http://localhost:3000/api/orders/checkout?userId=${userId}`, {
+    const res = await fetch(`http://${window.location.hostname}:3000/api/orders/checkout?userId=${userId}`, {
       method: "POST",
       headers: { ...(token ? { "Authorization": `Bearer ${token}` } : {}) },
     });

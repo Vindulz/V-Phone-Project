@@ -11,27 +11,32 @@
     let allNotifications = [];
 
     async function fetchNotifications() {
-        if (!userId) return [];
-        try {
-            const isAdmin = role === "admin";
-            const url = isAdmin
-                ? `http://localhost:3000/notifications/admin`
-                : `http://localhost:3000/notifications/user/${userId}`;
+    if (!userId) return [];
+    try {
+        const token = localStorage.getItem('token');
+        const isAdmin = role === 'admin';
+        const url = isAdmin
+            ? `http://${window.location.hostname}:3000/notifications/admin`
+            : `http://${window.location.hostname}:3000/notifications/user/me`;
 
-            const res = await fetch(url);
-            const data = await res.json();
-            allNotifications = Array.isArray(data) ? data : [];
-            return allNotifications;
-        } catch {
-            return [];
-        }
+        const res = await fetch(url, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+            },
+        });
+        const data = await res.json();
+        allNotifications = Array.isArray(data) ? data : [];
+        return allNotifications;
+    } catch {
+        return [];
     }
+}
 
     function getUnreadCount(notifications) {
         return notifications.filter(n => !n.isRead).length;
     }
 
-    // FIX 2: updateBadge now also syncs the inline badge inside the dropdown
+   
     function updateBadge(count) {
         const badge = document.getElementById("notif-badge");
         const inlineBadge = document.getElementById("notif-inline-badge");
@@ -56,23 +61,31 @@
     }
 
     async function markAsRead(id) {
-        await fetch(`http://localhost:3000/notifications/${id}/read`, { method: "PATCH" });
-        const notif = allNotifications.find(n => n.id === id);
-        if (notif) notif.isRead = true;
-        updateBadge(getUnreadCount(allNotifications));
-        renderNotifList();
-    }
+    const token = localStorage.getItem('token');
+    await fetch(`http://${window.location.hostname}:3000/notifications/${id}/read`, {
+        method: 'PATCH',
+        headers: { 'Authorization': `Bearer ${token}` },
+    });  
+    const notif = allNotifications.find(n => n.id === id);
+    if (notif) notif.isRead = true;
+    updateBadge(getUnreadCount(allNotifications));
+    renderNotifList();
+}
 
-    async function markAllRead() {
-        const isAdmin = role === "admin";
-        const url = isAdmin
-            ? `http://localhost:3000/notifications/admin/read-all`
-            : `http://localhost:3000/notifications/user/${userId}/read-all`;
-        await fetch(url, { method: "PATCH" });
-        allNotifications.forEach(n => (n.isRead = true));
-        updateBadge(0);
-        renderNotifList();
-    }
+async function markAllRead() {
+    const token = localStorage.getItem('token');
+    const isAdmin = role === 'admin';
+    const url = isAdmin
+        ? `http://${window.location.hostname}:3000/notifications/admin/read-all`
+        : `http://${window.location.hostname}:3000/notifications/user/me/read-all`;
+    await fetch(url, {
+        method: 'PATCH',
+        headers: { 'Authorization': `Bearer ${token}` },
+    });
+    allNotifications.forEach(n => (n.isRead = true));
+    updateBadge(0);
+    renderNotifList();
+}
 
     function timeAgo(dateStr) {
         const diff = Date.now() - new Date(dateStr).getTime();
@@ -103,7 +116,6 @@
             <div class="notif-item ${n.isRead ? "read" : "unread"}" data-id="${n.id}">
                 <span class="notif-icon">${getNotifIcon(n.type)}</span>
                 <div class="notif-body">
-                    <!-- FIX 1: read class added to msg for gray text -->
                     <p class="notif-msg ${n.isRead ? "read" : ""}">${n.message}</p>
                     <span class="notif-time">${timeAgo(n.createdAt)}</span>
                 </div>
@@ -122,7 +134,7 @@
     // ─── Navbar build ─────────────────────────────────────────────────────────
 
     if (navUsername) {
-        // FIX 3: wrap name + badge in a flex container so badge sits beside text
+        
         const nameText = document.createElement("span");
         nameText.textContent = username ? `Hello, ${username}!` : "Hello, Guest!";
 
@@ -174,7 +186,7 @@
             flex-direction: column;
         `;
 
-        // ── Notifications panel ──
+        // ── Panel notif──
         const notifWrapper = document.createElement("div");
         notifWrapper.id = "notif-wrapper";
         notifWrapper.style.cssText = `
@@ -325,7 +337,7 @@
                 line-height: 1.4;
                 word-break: break-word;
             }
-            /* FIX 1: gray text for read notifications */
+           
             .notif-msg.read {
                 color: #aaa;
                 font-weight: 400;
@@ -352,7 +364,7 @@
         `;
         document.head.appendChild(style);
 
-        // ── Toggle main dropdown ──
+        // ── Toggle dropdown menu ──
         navUsername.addEventListener("click", function (e) {
             e.stopPropagation();
             const isVisible = dropdown.style.display === "flex";
@@ -361,7 +373,7 @@
             notifWrapper.style.display = "none";
         });
 
-        // ── Toggle notif panel from dropdown link ──
+        // ── Toggle notif panel dari dropdown link ──
         notifLink.addEventListener("click", function (e) {
             e.preventDefault();
             e.stopPropagation();
@@ -383,7 +395,6 @@
             }
         });
 
-        // ── Close on outside click ──
         document.addEventListener("click", function () {
             dropdown.style.display = "none";
             notifWrapper.style.display = "none";
@@ -401,7 +412,7 @@
     // ─── Cart count ───────────────────────────────────────────────────────────
 
     if (cartCount && userId) {
-        fetch(`http://localhost:3000/api/orders/cart?userId=${userId}`)
+        fetch(`http://${window.location.hostname}:3000/api/orders/cart?userId=${userId}`)
             .then(res => res.json())
             .then(items => { cartCount.textContent = items.length || 0; })
             .catch(() => { cartCount.textContent = "0"; });

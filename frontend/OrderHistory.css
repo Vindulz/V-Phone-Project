@@ -159,7 +159,7 @@ body {
     color: #888;
 }
 
-/* DATE SEPARATOR */
+
 .date-separator {
     font-family: 'Lexend', sans-serif;
     font-size: 0.85rem;
@@ -253,7 +253,7 @@ footer p {
     footer p { font-size: 0.75rem; }
 }
 
-/* Order session total row */
+
 .group-total {
     display: flex;
     justify-content: space-between;

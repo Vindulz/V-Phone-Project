@@ -87,7 +87,7 @@ form.addEventListener("submit", async function (e) {
     btn.textContent = "Saving...";
 
     try {
-        const res = await fetch(`http://localhost:3000/api/users/${userId}`, {
+        const res = await fetch(`http://${window.location.hostname}:3000/api/users/${userId}`, {
             method: "PATCH",
             headers: {
                 "Content-Type": "application/json",

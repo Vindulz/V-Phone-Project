@@ -46,4 +46,10 @@ export class OrdersController {
   getHistory(@Query('userId') userId: number) {
     return this.ordersService.getOrderHistory(Number(userId));
   }
+
+  @Get('revenue')
+  @ApiOperation({ summary: 'Get total revenue from all placed orders (admin)' })
+  getRevenue() {
+    return this.ordersService.getTotalRevenue();
+  }
 }

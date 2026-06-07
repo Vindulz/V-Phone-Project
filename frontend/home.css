@@ -139,7 +139,7 @@ body{
 .cart-icon-link img {
     width: 2rem;
     height: 2rem;
-    filter: brightness(0) invert(1); /* makes the icon white */
+    filter: brightness(0) invert(1); 
     transition: opacity 0.2s ease;
 }
 

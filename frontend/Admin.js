@@ -1,17 +1,19 @@
-const API = 'http://localhost:3000';
+const API= `http://${window.location.hostname}:3000`;
 const token = localStorage.getItem('token');
 const username = localStorage.getItem('username');
+const userRole = localStorage.getItem('role')
 let editingProductId = null;
 
 if (!token) window.location.href = 'Login.html';
-if (username) {
+if (userRole == 'admin') {
     document.getElementById('admin-name').textContent = username;
     document.getElementById('section-subtitle').textContent = `Welcome back, ${username}!`;
+}else{
+    alert("ACCESS DENIED. UNAURTHOROTIZED ATTEMPT");
+    window.location.href = 'Login.html';
 }
 
-// =============================================
-// SIDEBAR NAVIGATION
-// =============================================
+// SIDEBAR NAV
 const navItems = document.querySelectorAll('.nav-item');
 const sections = document.querySelectorAll('.section');
 const sectionTitle = document.getElementById('section-title');
@@ -38,9 +40,7 @@ navItems.forEach(item => {
     });
 });
 
-// =============================================
 // HELPERS
-// =============================================
 function formatPrice(price) {
     return 'Rp ' + Number(price).toLocaleString('id-ID');
 }
@@ -61,21 +61,22 @@ function authHeaders() {
     return { 'Authorization': `Bearer ${token}` };
 }
 
-function jsonHeaders() {
-    return { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
-}
-
-// =============================================
 // OVERVIEW
-// =============================================
 async function loadOverview() {
     try {
-        const [productsRes, usersRes] = await Promise.all([
+        const [productsRes, usersRes, revenueRes] = await Promise.all([
             fetch(`${API}/api/products`, { headers: authHeaders() }),
             fetch(`${API}/api/users`,    { headers: authHeaders() }),
+            fetch(`${API}/api/orders/revenue`, { headers: authHeaders() }),
         ]);
         const products = await productsRes.json();
         const users    = await usersRes.json();
+        const revenue  = await revenueRes.json();
+
+        document.getElementById('total-revenue').textContent =
+            'Rp ' + Number(revenue.total).toLocaleString('id-ID');
+        document.getElementById('total-orders-placed').textContent =
+            `${revenue.orderCount} orders placed`;
 
         document.getElementById('total-products').textContent = products.length;
         document.getElementById('total-users').textContent    = users.length;
@@ -104,9 +105,7 @@ async function loadOverview() {
     }
 }
 
-// =============================================
 // PRODUCTS
-// =============================================
 async function loadProducts() {
     const tbody = document.getElementById('products-table-body');
     tbody.innerHTML = `<tr><td colspan="8" class="loading">Loading...</td></tr>`;
@@ -125,7 +124,7 @@ async function loadProducts() {
                 <td><span style="font-family:'Space Mono',monospace;color:#888">#${p.id}</span></td>
                 <td>
                     ${p.imageUrl
-                        ? `<img src="${API}/${p.imageUrl}" alt="${p.name}" style="width:3rem;height:3rem;object-fit:cover;border-radius:0.4rem;">`
+                        ? `<img src="${API}${p.imageUrl}" alt="${p.name}" style="width:3rem;height:3rem;object-fit:cover;border-radius:0.4rem;">`
                         : '<span style="color:#bbb;font-size:0.8rem;">No image</span>'}
                 </td>
                 <td><b>${p.name}</b></td>
@@ -149,7 +148,7 @@ async function loadProducts() {
     }
 }
 
-// Image preview for Add form
+// ADD PRODUCT
 document.getElementById('p-image').addEventListener('change', function() {
     const file = this.files[0];
     const preview = document.getElementById('p-image-preview');
@@ -207,7 +206,7 @@ document.getElementById('btn-save-product').addEventListener('click', async () =
     try {
         const res = await fetch(`${API}/api/products`, {
             method: 'POST',
-            headers: authHeaders(),
+            headers: authHeaders(), // no Content-Type — browser sets multipart boundary
             body: formData,
         });
 
@@ -236,11 +235,7 @@ function clearProductForm() {
     document.getElementById('p-error').textContent = '';
 }
 
-// =============================================
 // EDIT PRODUCT
-// =============================================
-
-
 function openEditModal(product) {
     editingProductId = product.id;
 
@@ -256,10 +251,9 @@ function openEditModal(product) {
     document.getElementById('e-error').textContent = '';
     document.getElementById('e-image').value       = '';
 
-    // show current image if exists
     const previewImg = document.getElementById('e-preview-img');
     if (product.imageUrl) {
-        previewImg.src = `${API}/${product.imageUrl}`;
+        previewImg.src = `${API}${product.imageUrl}`; // fixed: no double slash
         previewImg.style.display = 'block';
     } else {
         previewImg.style.display = 'none';
@@ -268,7 +262,6 @@ function openEditModal(product) {
     document.getElementById('edit-modal-overlay').style.display = 'flex';
 }
 
-// Preview new image in edit modal
 document.getElementById('e-image').addEventListener('change', function() {
     const file = this.files[0];
     const previewImg = document.getElementById('e-preview-img');
@@ -307,38 +300,24 @@ document.getElementById('edit-modal-save').addEventListener('click', async () =>
 
     errorEl.textContent = '';
 
+    // Send everything as FormData so image upload works the same as add
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('category', category);
+    formData.append('price', price);
+    formData.append('stock', stock);
+    if (description) formData.append('description', description);
+    if (spec1) formData.append('spec1', spec1);
+    if (spec2) formData.append('spec2', spec2);
+    if (spec3) formData.append('spec3', spec3);
+    if (spec4) formData.append('spec4', spec4);
+    if (imageFile) formData.append('image', imageFile);
+
     try {
-        // Step 1 — upload new image if provided
-        let imageUrl = undefined;
-        if (imageFile) {
-            const formData = new FormData();
-            formData.append('file', imageFile);
-            const uploadRes = await fetch(`${API}/api/products/upload-image`, {
-                method: 'POST',
-                headers: authHeaders(),
-                body: formData,
-            });
-            const uploadData = await uploadRes.json();
-            if (!uploadRes.ok) {
-                errorEl.textContent = uploadData.message || 'Image upload failed.';
-                return;
-            }
-            imageUrl = uploadData.imageUrl;
-        }
-
-        // Step 2 — patch the product
-        const body = {
-            name, category,
-            price: Number(price),
-            stock: Number(stock),
-            description, spec1, spec2, spec3, spec4,
-            ...(imageUrl ? { imageUrl } : {}),
-        };
-
         const res = await fetch(`${API}/api/products/${editingProductId}`, {
             method: 'PATCH',
-            headers: jsonHeaders(),
-            body: JSON.stringify(body),
+            headers: authHeaders(), // no Content-Type for FormData
+            body: formData,
         });
 
         const data = await res.json();
@@ -356,9 +335,7 @@ document.getElementById('edit-modal-save').addEventListener('click', async () =>
     }
 });
 
-// =============================================
 // USERS
-// =============================================
 async function loadUsers() {
     const tbody = document.getElementById('users-table-body');
     tbody.innerHTML = `<tr><td colspan="7" class="loading">Loading...</td></tr>`;
@@ -393,11 +370,7 @@ async function loadUsers() {
     }
 }
 
-
-
-// =============================================
 // DELETE MODAL
-// =============================================
 let pendingDelete = null;
 
 function confirmDelete(type, id, name) {
@@ -438,7 +411,5 @@ document.getElementById('modal-overlay').addEventListener('click', function(e) {
     }
 });
 
-// =============================================
 // INIT
-// =============================================
 loadOverview();

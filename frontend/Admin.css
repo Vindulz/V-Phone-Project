@@ -242,7 +242,7 @@ body {
     flex-shrink: 0;
 }
 
-/* ← NEW: sizes the images inside stat-icon */
+
 .stat-icon img {
     width: 2rem;
     height: 2rem;
@@ -565,7 +565,7 @@ body {
     justify-content: flex-end;
 }
 
-/* Wide modal for edit form */
+
 .modal-wide {
     max-width: 42rem !important;
     max-height: 85vh;
@@ -602,7 +602,7 @@ body {
     background: white;
 }
 
-/* Fix actions column - make td itself flex */
+
 td.actions-cell {
     display: flex;
     align-items: center;
@@ -611,12 +611,12 @@ td.actions-cell {
     padding: 0.875rem 1rem !important;
 }
 
-/* Fix last column header alignment */
+
 .dash-table th:last-child {
     text-align: center;
 }
 
-/* Fix icon size for BOTH products and users trash/edit icons */
+
 .actions-cell .btn-icon {
     display: flex;
     align-items: center;

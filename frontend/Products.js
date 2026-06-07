@@ -1,9 +1,7 @@
-const API = 'http://localhost:3000';
+const API = `http://${window.location.hostname}:3000`;
 
-// =============================================
-// CAROUSEL STATE
-// =============================================
-let carouselStates = {}; // { 'gaming': { current: 0, total: 3 }, ... }
+//--Carousel--
+let carouselStates = {}; 
 
 function showSlide(category, index) {
     const carousel = document.querySelector(`#${category} .carousel`);
@@ -22,9 +20,7 @@ function moveSlide(category, direction) {
     showSlide(category, carouselStates[category].current + direction);
 }
 
-// =============================================
-// HELPERS
-// =============================================
+// --Helpers--
 function formatPrice(price) {
     return 'Rp ' + Number(price).toLocaleString('id-ID');
 }
@@ -44,13 +40,10 @@ function productImage(product) {
     if (product.imageUrl) {
         return `<img src="${product.imageUrl}" alt="${product.name}"/>`;
     }
-    // fallback placeholder
     return `<div class="img-placeholder">No Image</div>`;
 }
 
-// =============================================
-// BUILD CAROUSEL SLIDE
-// =============================================
+//--Carousel Slide--
 function buildSlide(product, cardClass, textClass, imageClass, btnId) {
     const outOfStock = product.stock === 0;
     return `
@@ -86,9 +79,7 @@ function buildSlide(product, cardClass, textClass, imageClass, btnId) {
     `;
 }
 
-// =============================================
-// BUILD CATEGORY SECTION
-// =============================================
+//--Category Section--
 function buildSection(category, products) {
     const sectionEl = document.getElementById(category);
     if (!sectionEl) return;
@@ -121,7 +112,6 @@ function buildSection(category, products) {
     carouselStates[category] = { current: 0, total: products.length };
     showSlide(category, 0);
 
-    // attach buy now listeners
     products.forEach((p, i) => {
         const btn = document.getElementById(`btn-${category}-${i}`);
         if (btn && p.stock > 0) {
@@ -130,9 +120,7 @@ function buildSection(category, products) {
     });
 }
 
-// =============================================
-// LOAD ALL PRODUCTS FROM DB
-// =============================================
+//--Load Products dari Database--
 async function loadProducts() {
     try {
         const res = await fetch(`${API}/api/products`);
@@ -151,9 +139,7 @@ async function loadProducts() {
     }
 }
 
-// =============================================
-// QUANTITY CONTROLS
-// =============================================
+//--Untuk ngurus Kuantitas--
 function changeQty(btnId, delta) {
     const input = document.getElementById(`qty-${btnId}`);
     if (!input) return;
@@ -162,9 +148,8 @@ function changeQty(btnId, delta) {
     input.value = newVal;
 }
 
-// =============================================
-// BUY NOW
-// =============================================
+
+//--Beli Produk--
 async function buyProduct(btn) {
     const userId  = localStorage.getItem('userId');
     const token   = localStorage.getItem('token');
@@ -208,7 +193,6 @@ async function buyProduct(btn) {
 
         alert(data.message);
 
-        // update cart count in navbar
         const cartCount = document.getElementById('nav-cart-count');
         if (cartCount && userId) {
             const cartRes = await fetch(`${API}/api/orders/cart?userId=${userId}`);
@@ -221,9 +205,7 @@ async function buyProduct(btn) {
     }
 }
 
-// =============================================
-// INIT
-// =============================================
+//INIT
 document.addEventListener('DOMContentLoaded', async () => {
     await loadProducts();
 });

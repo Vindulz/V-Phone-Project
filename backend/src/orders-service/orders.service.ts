@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { Order } from './order.entity';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { ProductsService } from '../products-service/products.service';
-import { NotificationsService, LOW_STOCK_THRESHOLD } from '../notifications-service/notifications.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class OrdersService {
@@ -12,14 +12,13 @@ export class OrdersService {
     @InjectRepository(Order)
     private ordersRepository: Repository<Order>,
     private productsService: ProductsService,
-    private notificationsService: NotificationsService,
+    private eventEmitter: EventEmitter2,
   ) {}
 
   async addToCart(dto: CreateOrderDto) {
     const product = await this.productsService.findOne(dto.productId);
     const quantity = dto.quantity ?? 1;
 
-    // Check stock before adding to cart
     if (product.stock === 0) {
       throw new BadRequestException(`"${product.name}" is out of stock`);
     }
@@ -29,7 +28,6 @@ export class OrdersService {
       );
     }
 
-    // If already in cart, increase quantity
     const existing = await this.ordersRepository.findOne({
       where: { userId: dto.userId, productId: dto.productId, status: 'cart' },
     });
@@ -64,7 +62,6 @@ export class OrdersService {
     if (!order) throw new NotFoundException('Item not found in cart');
     if (quantity < 1) throw new BadRequestException('Quantity must be at least 1');
 
-    // Check stock before updating
     const product = await this.productsService.findOne(order.productId);
     if (quantity > product.stock) {
       throw new BadRequestException(
@@ -109,7 +106,7 @@ export class OrdersService {
       }
     }
 
-    // Step 2 — decrement stock for each item
+    // Step 2 — decrement stock once per item
     await Promise.all(
       cartItems.map(item =>
         this.productsService.decrementStock(item.productId, item.quantity),
@@ -128,29 +125,21 @@ export class OrdersService {
       0,
     );
 
-    // Step 4 — notify the user about their successful checkout
-    const itemSummary = cartItems
-      .map(i => `${i.productName} x${i.quantity}`)
-      .join(', ');
+    // Step 4 — emit low stock events using updated stock (findOne, NOT decrementStock)
+    for (const item of cartItems) {
+      const updatedProduct = await this.productsService.findOne(item.productId);
+      this.eventEmitter.emit('product.stock_checked', {
+        productName: updatedProduct.name,
+        stock: updatedProduct.stock,
+      });
+    }
 
-    await this.notificationsService.createUserNotification(
+    // Step 5 — emit checkout success event
+    this.eventEmitter.emit('checkout.success', {
       userId,
-      'checkout',
-      `Your order was placed successfully! Items: ${itemSummary}. Total: Rp${total.toLocaleString('id-ID')}.`,
-    );
-
-    // Step 5 — notify admins for any product that has fallen below the low stock threshold
-    await Promise.all(
-      cartItems.map(async (item) => {
-        const updatedProduct = await this.productsService.findOne(item.productId);
-        if (updatedProduct.stock <= LOW_STOCK_THRESHOLD) {
-          await this.notificationsService.createAdminNotification(
-            'low_stock',
-            `Low stock alert: "${updatedProduct.name}" only has ${updatedProduct.stock} unit(s) remaining.`,
-          );
-        }
-      }),
-    );
+      items: cartItems.map(i => ({ name: i.productName, quantity: i.quantity })),
+      total,
+    });
 
     return {
       message: 'Checkout successful!',
@@ -169,5 +158,19 @@ export class OrdersService {
       where: { userId, status: 'placed' },
       order: { orderedAt: 'DESC' },
     });
+  }
+
+  async getTotalRevenue() {
+    const result = await this.ordersRepository
+      .createQueryBuilder('order')
+      .select('SUM(order.price * order.quantity)', 'total')
+      .addSelect('COUNT(*)', 'orderCount')
+      .where('order.status = :status', { status: 'placed' })
+      .getRawOne();
+
+    return {
+      total: Number(result.total) || 0,
+      orderCount: Number(result.orderCount) || 0,
+    };
   }
 }

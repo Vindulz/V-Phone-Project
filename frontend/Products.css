@@ -106,7 +106,7 @@ body{
     width: 100%;
 }
 
-/* Cart and username */
+
 .nav-user {
     display: flex;
     align-items: center;
@@ -544,7 +544,7 @@ footer p{
     
 }
 
-/* Quantity controls — add to both Products.css and Cart.css */
+
 .qty-wrapper {
     margin-bottom: 0.5rem;
   }
@@ -602,7 +602,7 @@ footer p{
     -webkit-appearance: none;
   }
   
-  /* Cart-specific */
+
   .unit-price {
     font-size: 0.85rem !important;
     color: #888 !important;
@@ -621,7 +621,7 @@ footer p{
     gap: 0.5rem;
   }
   
-  /* Stock label */
+
   .stock-label {
     font-family: 'Lexend', sans-serif;
     font-size: 0.85rem;

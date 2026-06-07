@@ -13,7 +13,7 @@ import {
     @PrimaryGeneratedColumn()
     id: number;
   
-    // null = broadcast to all admins; set for user-specific notifications
+    
     @Column({ type: 'int', nullable: true })
     userId: number | null;
   

@@ -21,17 +21,33 @@ import {
   ApiUnauthorizedResponse,
   ApiForbiddenResponse,
   ApiConsumes,
-  ApiBody,
 } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { extname, join } from 'path';
+import { extname } from 'path';
 import { RolesGuard } from '../auth-service/roles.guard';
 import { Roles } from '../auth-service/roles.decorator';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+
+const multerOptions = {
+  storage: diskStorage({
+    destination: './public/uploads',
+    filename: (_req, file, cb) => {
+      const unique = Date.now() + '-' + Math.round(Math.random() * 1e6);
+      cb(null, `${unique}${extname(file.originalname)}`);
+    },
+  }),
+  fileFilter: (_req, file, cb) => {
+    if (!file.mimetype.match(/\/(jpg|jpeg|png|webp)$/)) {
+      return cb(new BadRequestException('Only JPG, PNG, and WEBP images are allowed'), false);
+    }
+    cb(null, true);
+  },
+  limits: { fileSize: 5 * 1024 * 1024 },
+};
 
 @ApiTags('products')
 @Controller('api/products')
@@ -42,54 +58,38 @@ export class ProductsController {
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin')
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Add a new product (admin only)' })
+  @ApiConsumes('multipart/form-data')
+  @ApiOperation({ summary: 'Add a new product with image (admin only)' })
   @ApiUnauthorizedResponse({ description: 'Missing or invalid JWT token' })
   @ApiForbiddenResponse({ description: 'Admin role required' })
-  create(@Body() dto: CreateProductDto) {
-    return this.productsService.create(dto);
+  @UseInterceptors(FileInterceptor('image', multerOptions))
+  create(@Body() dto: CreateProductDto, @UploadedFile() file?: Express.Multer.File) {
+    const imageUrl = file ? `/uploads/${file.filename}` : undefined;
+    return this.productsService.create({ ...dto, imageUrl });
   }
 
-  @Post('upload-image')
+  @Patch(':id')
   @UseGuards(AuthGuard('jwt'), RolesGuard)
   @Roles('admin')
   @ApiBearerAuth()
-  @ApiOperation({ summary: 'Upload a product image (admin only)' })
   @ApiConsumes('multipart/form-data')
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        file: { type: 'string', format: 'binary' },
-      },
-    },
-  })
-  @UseInterceptors(
-    FileInterceptor('file', {
-      storage: diskStorage({
-        destination: join(__dirname, '..', '..', 'public', 'assets'),
-        filename: (req, file, cb) => {
-          // e.g. product-1717123456789.png
-          const uniqueName = `product-${Date.now()}${extname(file.originalname)}`;
-          cb(null, uniqueName);
-        },
-      }),
-      fileFilter: (req, file, cb) => {
-        const allowed = ['.jpg', '.jpeg', '.png', '.webp'];
-        const ext = extname(file.originalname).toLowerCase();
-        if (!allowed.includes(ext)) {
-          return cb(new BadRequestException('Only image files are allowed (jpg, png, webp)'), false);
-        }
-        cb(null, true);
-      },
-      limits: { fileSize: 5 * 1024 * 1024 }, // 5MB max
-    }),
-  )
-  uploadImage(@UploadedFile() file: Express.Multer.File) {
-    if (!file) throw new BadRequestException('No file uploaded');
-    return {
-      message: 'Image uploaded successfully',
-      imageUrl: `assets/${file.filename}`, // relative path for frontend
-    };
+  @ApiOperation({ summary: 'Update a product with optional new image (admin only)' })
+  @ApiUnauthorizedResponse({ description: 'Missing or invalid JWT token' })
+  @ApiForbiddenResponse({ description: 'Admin role required' })
+  @UseInterceptors(FileInterceptor('image', multerOptions))
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateProductDto,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    const imageUrl = file ? `/uploads/${file.filename}` : undefined;
+    return this.productsService.update(id, { ...dto, ...(imageUrl ? { imageUrl } : {}) });
+  }
+
+  @Get('best-sellers')
+  @ApiOperation({ summary: 'Get best selling products' })
+  getBestSellers() {
+    return this.productsService.getBestSellers(5);
   }
 
   @Get()
@@ -100,24 +100,7 @@ export class ProductsController {
     @Query('search') search?: string,
     @Query('maxPrice') maxPrice?: number,
   ) {
-    return this.productsService.findAll(
-      search,
-      maxPrice ? Number(maxPrice) : undefined,
-    );
-  }
-
-  @Patch(':id')
-  @UseGuards(AuthGuard('jwt'), RolesGuard)
-  @Roles('admin')
-  @ApiBearerAuth()
-  @ApiOperation({ summary: 'Update a product (admin only)' })
-  @ApiUnauthorizedResponse({ description: 'Missing or invalid JWT token' })
-  @ApiForbiddenResponse({ description: 'Admin role required' })
-  update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() dto: UpdateProductDto,
-  ) {
-    return this.productsService.update(id, dto);
+    return this.productsService.findAll(search, maxPrice ? Number(maxPrice) : undefined);
   }
 
   @Get(':id')

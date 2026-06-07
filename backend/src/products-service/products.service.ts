@@ -1,15 +1,18 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, ILike, LessThanOrEqual } from 'typeorm';
+import { In, Repository, ILike, LessThanOrEqual } from 'typeorm';
 import { Product } from './product.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { Order } from '../orders-service/order.entity';
 
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private productsRepository: Repository<Product>,
+    @InjectRepository(Product) private readonly productRepo: Repository<Product>,
+    @InjectRepository(Order)   private readonly orderRepo: Repository<Order>,
   ) {}
 
   async create(dto: CreateProductDto) {
@@ -17,6 +20,28 @@ export class ProductsService {
     const saved = await this.productsRepository.save(product);
     return { message: 'Product created', productId: saved.id };
   }
+
+  async getBestSellers(limit = 5): Promise<Product[]> {
+  // total quantity sold per product, highest first
+  const rows = await this.orderRepo
+    .createQueryBuilder('o')
+    .select('o.productId', 'productId')
+    .addSelect('SUM(o.quantity)', 'totalSold')
+    .where('o.productId IS NOT NULL')
+    .groupBy('o.productId')
+    .orderBy('totalSold', 'DESC')
+    .limit(limit)
+    .getRawMany();
+
+  const ids = rows.map(r => Number(r.productId)).filter(Boolean);
+  if (ids.length === 0) return [];
+
+  const products = await this.productRepo.findBy({ id: In(ids) });
+
+  
+  const rank = new Map(ids.map((id, i) => [id, i]));
+  return products.sort((a, b) => rank.get(a.id)! - rank.get(b.id)!);
+}
 
   async findAll(search?: string, maxPrice?: number) {
     const where: any = {};

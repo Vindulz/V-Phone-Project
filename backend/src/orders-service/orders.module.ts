@@ -10,7 +10,7 @@ import { NotificationsModule } from '../notifications-service/notifications.modu
   imports: [
     TypeOrmModule.forFeature([Order]),
     ProductsModule,
-    NotificationsModule, // gives OrdersService access to NotificationsService
+    NotificationsModule, 
   ],
   controllers: [OrdersController],
   providers: [OrdersService],

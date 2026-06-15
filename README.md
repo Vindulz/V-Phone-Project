@@ -14,4 +14,4 @@ Admins have a special privelege, where they can **Add**, **Edit**, **or Delete**
 
 
 
-**NOTE** : All of this is a personal project and serves as a The Final Project for course : Human and Computer Interaction. It serves as a solution for the case study provided by the lecturer. It is not for commercial use.
+**NOTE** : All of this is a personal project and serves as a The Final Project for course : Human and Computer Interaction & Software Architecture. It serves as a solution for the case study provided by the lecturer. It is not for commercial use.

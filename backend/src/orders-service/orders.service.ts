@@ -95,7 +95,6 @@ export class OrdersService {
 
     if (cartItems.length === 0) throw new BadRequestException('Cart is empty');
 
-    // Step 1 — final stock check for ALL items before doing anything
     for (const item of cartItems) {
       const product = await this.productsService.findOne(item.productId);
       if (product.stock < item.quantity) {
@@ -106,14 +105,14 @@ export class OrdersService {
       }
     }
 
-    // Step 2 — decrement stock once per item
+
     await Promise.all(
       cartItems.map(item =>
         this.productsService.decrementStock(item.productId, item.quantity),
       ),
     );
 
-    // Step 3 — mark all cart items as placed
+
     await Promise.all(
       cartItems.map(item =>
         this.ordersRepository.update(item.id, { status: 'placed' }),
@@ -125,7 +124,6 @@ export class OrdersService {
       0,
     );
 
-    // Step 4 — emit low stock events using updated stock (findOne, NOT decrementStock)
     for (const item of cartItems) {
       const updatedProduct = await this.productsService.findOne(item.productId);
       this.eventEmitter.emit('product.stock_checked', {
@@ -134,7 +132,7 @@ export class OrdersService {
       });
     }
 
-    // Step 5 — emit checkout success event
+    
     this.eventEmitter.emit('checkout.success', {
       userId,
       items: cartItems.map(i => ({ name: i.productName, quantity: i.quantity })),
